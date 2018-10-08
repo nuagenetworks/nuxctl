@@ -1,19 +1,27 @@
+#!/bin/bash
+
 version=$1
-target_arch=amd64
 
-mkdir -p build/${version}
+echo "Creating build directory: $(pwd)/build/${version} ..."
+mkdir -p build/$version
 
-target_os=darwin
-echo "building nuxctl for ${target_os}-${target_arch}"
-mkdir -p build/${version}/${target_os} && \
-env GOOS=${target_os} GOARCH=${target_arch} go build -o build/${version}/${target_os}/nuxctl main.go
+platforms=("windows/amd64" "linux/amd64" "darwin/amd64")
 
-target_os=linux
-echo "building nuxctl for ${target_os}-${target_arch}"
-mkdir -p build/${version}/${target_os} && \
-env GOOS=${target_os} GOARCH=${target_arch} go build -o build/${version}/${target_os}/nuxctl main.go
+for platform in "${platforms[@]}"
+do
+    platform_split=(${platform//\// })
+    GOOS=${platform_split[0]}
+    GOARCH=${platform_split[1]}
+    output_name=nuxctl'-'$GOOS'-'$GOARCH
 
-target_os=windows
-echo "building nuxctl for ${target_os}-${target_arch}"
-mkdir -p build/${version}/${target_os} && \
-env GOOS=${target_os} GOARCH=${target_arch} go build -o build/${version}/${target_os}/nuxctl.exe main.go
+    if [ $GOOS = "windows" ]; then
+        output_name+='.exe'
+    fi
+
+    echo "Building nuxct for ${GOOS}/${GOARCH}..."
+    env GOOS=$GOOS GOARCH=$GOARCH go build -o build/$version/$output_name main.go
+    if [ $? -ne 0 ]; then
+        echo 'An error has occurred! Aborting the script execution...'
+        exit 1
+    fi
+done
