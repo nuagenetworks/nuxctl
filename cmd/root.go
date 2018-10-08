@@ -19,13 +19,13 @@ var user nuagex.User
 
 var lab nuagex.Lab
 
+// labID is the ID of a NuageX Lab (which is also the hostname name)
+var labID string
+
 var rootCmd = &cobra.Command{
 	Use:   "nuxctl",
 	Short: "nuxctl is a CLI client for NuageX lab deployment",
 	Long:  `nuxctl is a command line client to deploy labs which configuration is expressed in YAML files on the NuageX platform.`,
-	// Run: func(cmd *cobra.Command, args []string) {
-	// 	// Do Stuff Here
-	// },
 }
 
 // Execute launches the root command

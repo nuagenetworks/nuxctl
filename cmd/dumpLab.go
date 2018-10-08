@@ -15,9 +15,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// labID is the ID of a NuageX Lab (which is also the hostname name)
-var labID string
-
 // outLabFPath is a path to the file that will receive NuageX Lab configuration dumped with `dump-lab command`
 var outLabFPath string
 
