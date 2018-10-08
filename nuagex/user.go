@@ -60,7 +60,10 @@ func (u *User) Login() (*User, error) {
 	URL := buildURL("/auth/login")
 	req, _ := http.NewRequest("POST", URL, bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
-
+	// TODO: rework to use a single HTTPRequest func
+	if UA != "" {
+		req.Header.Set("User-Agent", UA)
+	}
 	client := &http.Client{}
 
 	response, _ := client.Do(req)

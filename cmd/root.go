@@ -31,6 +31,7 @@ var rootCmd = &cobra.Command{
 // Execute launches the root command
 func Execute(ver string) {
 	VERSION = ver
+	nuagex.UA = fmt.Sprintf("nuxctl/%s", VERSION)
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
