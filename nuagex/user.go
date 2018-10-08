@@ -17,6 +17,7 @@ type User struct {
 	Username string `json:"username" yaml:"username"`
 	Password string `json:"password" yaml:"password"`
 	Token    string
+	UserID   string
 }
 
 // LoadCredentials : load user credentials from YAML file or env variables
@@ -75,12 +76,13 @@ func (u *User) Login() (*User, error) {
 	if readErr != nil {
 		log.Fatal(readErr)
 	}
-	fmt.Printf("User '%s' logged in...\n", u.Username)
+	// fmt.Printf("User '%s' logged in...\n", u.Username)
 	var loginResponse LoginResponse
 
 	json.Unmarshal(body, &loginResponse)
 
 	u.Token = loginResponse.Token
+	u.UserID = loginResponse.User
 
 	return u, nil
 }
