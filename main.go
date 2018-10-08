@@ -1,8 +1,6 @@
 package main
 
-import (
-	"nuxctl/cmd"
-)
+import "github.com/nuagenetworks/nuxctl/cmd"
 
 func main() {
 	var (
