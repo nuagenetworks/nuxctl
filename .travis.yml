@@ -1,7 +1,23 @@
 language: go
 
 go:
-  - "1.11"
+  - master
 
-script:
-  - bash build.sh v-test
+before_deploy:
+  - go get github.com/inconshreveable/mousetrap
+  - "./build.sh $TRAVIS_BRANCH"
+
+deploy:
+  provider: releases
+  api_key: $GH_API_TOKEN
+  file_glob: true
+  file: build/$TRAVIS_BRANCH/*
+  skip_cleanup: true
+  on:
+    tags: true
+
+# safelist
+branches:
+  only:
+  - master
+  - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
