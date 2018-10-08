@@ -82,3 +82,19 @@ func GetLab(u *User, id string) (Lab, *http.Response, error) {
 	json.Unmarshal(b, &result)
 	return result, r, nil
 }
+
+// DeleteLab attempts to delete an existing NuageX lab
+func DeleteLab(u *User, id string) (LabResponse, *http.Response, error) {
+	URL := buildURL(fmt.Sprintf("/labs/%v", id))
+	b, r, err := SendHTTPRequest("DELETE", URL, u.Token, nil)
+	if err != nil {
+		return LabResponse{}, r, err
+	}
+
+	if r.StatusCode != 202 {
+		var eresp ErrorResponse
+		json.Unmarshal(b, &eresp)
+		log.Fatalf("Failed to delete a lab. Reason: %s", eresp.Message)
+	}
+	return LabResponse{}, r, nil
+}
