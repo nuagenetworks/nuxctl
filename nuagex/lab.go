@@ -14,14 +14,18 @@ import (
 
 // Lab defines a NuageX environment
 type Lab struct {
-	Name     string    `yaml:"name" json:"name"`
-	Reason   string    `yaml:"reason,omitempty" json:"reason"`
-	Expires  time.Time `yaml:"expires" json:"expires"`
-	Template string    `yaml:"template" json:"template"`
-	SSHKeys  []SSHKey  `yaml:"sshKeys" json:"sshKeys"`
-	Services []Service `yaml:"services" json:"services"`
-	Networks []Network `yaml:"networks" json:"networks"`
-	Servers  []Server  `yaml:"servers" json:"servers"`
+	ID         string    `yaml:"_id" json:"_id"`
+	Name       string    `yaml:"name" json:"name"`
+	Reason     string    `yaml:"reason,omitempty" json:"reason"`
+	Expires    time.Time `yaml:"expires" json:"expires"`
+	Template   string    `yaml:"template" json:"template"`
+	SSHKeys    []SSHKey  `yaml:"sshKeys" json:"sshKeys"`
+	Services   []Service `yaml:"services" json:"services"`
+	Networks   []Network `yaml:"networks" json:"networks"`
+	Servers    []Server  `yaml:"servers" json:"servers"`
+	Status     string
+	Password   string
+	ExternalIP string `yaml:"externalIP" json:"externalIP"`
 }
 
 // LabResponse : NuageX Lab response JSON object mapping
@@ -97,4 +101,16 @@ func DeleteLab(u *User, id string) (LabResponse, *http.Response, error) {
 		log.Fatalf("Failed to delete a lab. Reason: %s", eresp.Message)
 	}
 	return LabResponse{}, r, nil
+}
+
+// GetLabs retrives Lab JSON objects
+func GetLabs(u *User) ([]*Lab, error) {
+	URL := buildURL(fmt.Sprintf("/labs?user=%v", u.UserID))
+	b, _, err := SendHTTPRequest("GET", URL, u.Token, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var l []*Lab
+	json.Unmarshal(b, &l)
+	return l, nil
 }
