@@ -12,6 +12,9 @@ import (
 
 const apiURL string = "https://experience.nuagenetworks.net/api"
 
+// UA is a string to receive custom User-Agent for HTTP requests
+var UA string
+
 // FlavorResponse : Image Flavor response JSON object mapping
 // NOT IMPLEMENTED YET IN CLI
 type FlavorResponse struct {
@@ -40,6 +43,9 @@ func SendHTTPRequest(method, url, token string, body []byte) ([]byte, *http.Resp
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
+	if UA != "" {
+		req.Header.Set("User-Agent", UA)
+	}
 
 	client := &http.Client{}
 
