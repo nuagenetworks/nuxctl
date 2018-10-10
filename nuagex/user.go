@@ -17,6 +17,7 @@ type User struct {
 	Username string `json:"username" yaml:"username"`
 	Password string `json:"password" yaml:"password"`
 	Token    string
+	UserID   string
 }
 
 // LoadCredentials : load user credentials from YAML file or env variables
@@ -60,7 +61,10 @@ func (u *User) Login() (*User, error) {
 	URL := buildURL("/auth/login")
 	req, _ := http.NewRequest("POST", URL, bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
-
+	// TODO: rework to use a single HTTPRequest func
+	if UA != "" {
+		req.Header.Set("User-Agent", UA)
+	}
 	client := &http.Client{}
 
 	response, _ := client.Do(req)
@@ -75,12 +79,13 @@ func (u *User) Login() (*User, error) {
 	if readErr != nil {
 		log.Fatal(readErr)
 	}
-	fmt.Printf("User '%s' logged in...\n", u.Username)
+	// fmt.Printf("User '%s' logged in...\n", u.Username)
 	var loginResponse LoginResponse
 
 	json.Unmarshal(body, &loginResponse)
 
 	u.Token = loginResponse.Token
+	u.UserID = loginResponse.User
 
 	return u, nil
 }

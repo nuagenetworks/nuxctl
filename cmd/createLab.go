@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/nuagenetworks/nuxctl/nuagex"
 
@@ -13,12 +14,17 @@ import (
 // LabFPath is a path to the lab definition file
 var LabFPath string
 
+// wait is set when create-lab command should wait till the lab fails or succeeds to deploy
+var wait bool
+
 func init() {
 	rootCmd.AddCommand(createLabCmd)
 
 	createLabCmd.Flags().StringVarP(&CredFPath, "credentials", "c", "user_creds.yml", "Path to the user credentials file")
 
 	createLabCmd.Flags().StringVarP(&LabFPath, "lab-configuration", "l", "lab.yml", "Path to the Lab configuration file")
+
+	createLabCmd.Flags().BoolVarP(&wait, "wait", "w", false, "wait till lab succeeds of fails to deploy")
 }
 
 var createLabCmd = &cobra.Command{
@@ -43,4 +49,23 @@ func createLab(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 	fmt.Printf("Lab ID %s has been successfully queued for creation! Request ID %s.\n", lr.ID, r.Header.Get("x-request-id"))
+
+	if wait {
+		fmt.Println("Deploying lab...")
+		for {
+			l, _, err := nuagex.GetLab(&user, lr.ID)
+			if err != nil {
+				log.Fatal(err)
+			}
+			if l.Status == "started" {
+				fmt.Printf("Lab ID %s has been successfully started!\n", lr.ID)
+				printLabs([]*nuagex.Lab{&l})
+				return
+			} else if l.Status == "errored" {
+				fmt.Printf("Lab ID %s has failed to deploy!\n", lr.ID)
+				return
+			}
+			time.Sleep(30)
+		}
+	}
 }
