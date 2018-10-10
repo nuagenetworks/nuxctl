@@ -59,6 +59,7 @@ func createLab(cmd *cobra.Command, args []string) {
 			}
 			if l.Status == "started" {
 				fmt.Printf("Lab ID %s has been successfully started!\n", lr.ID)
+				printLabs([]*nuagex.Lab{&l})
 				return
 			} else if l.Status == "errored" {
 				fmt.Printf("Lab ID %s has failed to deploy!\n", lr.ID)
