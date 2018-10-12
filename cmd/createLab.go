@@ -65,7 +65,7 @@ func createLab(cmd *cobra.Command, args []string) {
 				fmt.Printf("Lab ID %s has failed to deploy!\n", lr.ID)
 				return
 			}
-			time.Sleep(30)
+			time.Sleep(15 * time.Second)
 		}
 	}
 }
