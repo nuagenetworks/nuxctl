@@ -36,7 +36,7 @@ var createLabCmd = &cobra.Command{
 }
 
 func createLab(cmd *cobra.Command, args []string) {
-	lab.Conf(LabFPath)
+	lab.LoadConf(LabFPath)
 
 	lab.Reason = nuxReason // change reason field to nuxctl
 
