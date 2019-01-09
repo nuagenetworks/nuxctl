@@ -49,12 +49,8 @@ func createLab(cmd *cobra.Command, args []string) {
 
 	lab.Reason = nuxReason // change reason field to nuxctl
 
-	// if expiration date is omitted
-	if lab.Expires.IsZero() {
-		fmt.Println(labDuration)
-		d := parseDuration(labDuration)
-		lab.Expires = time.Now().Add(d)
-	}
+	d := parseDuration(labDuration)
+	lab.Expires = time.Now().Add(d)
 
 	j, err := json.Marshal(lab)
 	if err != nil {
