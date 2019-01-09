@@ -36,20 +36,20 @@ type LabResponse struct {
 	Status   string
 }
 
-// Conf loads nuagex lab configuration from a YAML file
-func (c *Lab) Conf(fn string) *Lab {
+// LoadConf loads nuagex lab configuration from a YAML file
+func (l *Lab) LoadConf(fn string) *Lab {
 	fmt.Printf("Loading lab configuration from '%s' file\n", fn)
 	yamlFile, err := ioutil.ReadFile(fn)
 	if err != nil {
 		log.Printf("Lab Configuration Load error   #%v ", err)
 		os.Exit(1)
 	}
-	err = yaml.Unmarshal(yamlFile, c)
+	err = yaml.Unmarshal(yamlFile, l)
 	if err != nil {
 		log.Fatalf("Unmarshal: %v", err)
 	}
 
-	return c
+	return l
 }
 
 // CreateLab : Create a Lab in NuageX
